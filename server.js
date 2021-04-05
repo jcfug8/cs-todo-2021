@@ -1,9 +1,9 @@
 const express = require("express")
 const server = express()
 
-const bodyparser = require("body-parser")
+server.use(express.json({}))
 
-server.use(bodyparser.json({}))
+server.use(express.static(`${__dirname}/public/`))
 
 server.get("/", (req, res) => {
     console.log(req.body)

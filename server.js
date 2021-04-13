@@ -9,7 +9,18 @@ server.use(express.static(`${__dirname}/public/`));
 
 server.get("/todo/:id", (req, res) => {
   console.log(req.body);
-  res.send(`get request recieved for todo with id ${req.params.id}`);
+  Todo.findById(req.body.id, function (err, todo) {
+    res.setHeader("Content-Type", "application/json");
+    if (err) {
+      res.status(500).send({
+        message: `post request failed to replace todo: ${err}`,
+        error: err,
+      });
+      return;
+    }
+    // saved!
+    res.status(201).json(todo);
+  });
 });
 
 server.get("/todo", (req, res) => {
@@ -21,25 +32,51 @@ server.post("/todo", (req, res) => {
   console.log(req.body);
   Todo.create(
     {
-      name: "name",
-      description: "description",
+      name: req.body.name || "",
+      description: req.body.description || "",
       done: false,
       deadline: new Date(),
     },
     function (err, todo) {
+      res.setHeader("Content-Type", "application/json");
       if (err) {
-        res.status(500).send(`post request created todo`);
+        res.status(500).send({
+          message: `post request failed to create todo: ${err}`,
+          error: err,
+        });
         return;
       }
       // saved!
-      res.status(201).send(`post request created todo`);
+      res.status(201).json(todo);
     }
   );
 });
 
 server.put("/todo/:id", (req, res) => {
   console.log(req.body);
-  res.send(`put request recieved to replace todo with id ${req.params.id}`);
+  Todo.updateOne(
+    { _id: req.body.id },
+    {
+      $set: {
+        name: req.body.name || "",
+        description: req.body.description || "",
+        done: false,
+        deadline: new Date(),
+      },
+    },
+    function (err, todo) {
+      res.setHeader("Content-Type", "application/json");
+      if (err) {
+        res.status(500).send({
+          message: `post request failed to replace todo: ${err}`,
+          error: err,
+        });
+        return;
+      }
+      // saved!
+      res.status(201).json(todo);
+    }
+  );
 });
 
 server.patch("/todo/:id", (req, res) => {

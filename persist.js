@@ -3,7 +3,7 @@ const db = mongoose.connection;
 
 function connect(host, db_name) {
   mongoose
-    .connect(`mongodb://${host}/${db_name}`, {
+    .connect(`mongodb://new_user:password@${host}/${db_name}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })

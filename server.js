@@ -1,4 +1,5 @@
 const express = require("express");
+const { update } = require("./model");
 const server = express();
 
 const Todo = require("./model");
@@ -25,7 +26,18 @@ server.get("/todo/:id", (req, res) => {
 
 server.get("/todo", (req, res) => {
   console.log(req.body);
-  res.send(`get request recieved to list todos`);
+  Todo.find({}, function (err, todos) {
+    res.setHeader("Content-Type", "application/json");
+    if (err) {
+      res.status(500).send({
+        message: `get request failed to list all todos: ${err}`,
+        error: err,
+      });
+      return;
+    }
+    // saved!
+    res.status(200).json(todos);
+  });
 });
 
 server.post("/todo", (req, res) => {
@@ -53,9 +65,9 @@ server.post("/todo", (req, res) => {
 });
 
 server.put("/todo/:id", (req, res) => {
-  console.log(req.body);
+  console.log(`replacing - ${req.body.id}:`, req.body);
   Todo.updateOne(
-    { _id: req.body.id },
+    { _id: req.params.id },
     {
       $set: {
         name: req.body.name || "",
@@ -73,15 +85,46 @@ server.put("/todo/:id", (req, res) => {
         });
         return;
       }
-      // saved!
-      res.status(201).json(todo);
+      // updated!
+      res.status(200).json(todo);
     }
   );
 });
 
 server.patch("/todo/:id", (req, res) => {
-  console.log(req.body);
-  res.send(`patch request recieved to update todo with id ${req.params.id}`);
+  console.log(`patching body - ${req.params.id}:`, req.body);
+  updateTodo = {};
+  if (req.body.name) {
+    updateTodo.name = req.body.name;
+  }
+  if (req.body.description) {
+    updateTodo.description = req.body.description;
+  }
+  if (req.body.done) {
+    updateTodo.done = req.body.done;
+  }
+  if (req.body.deadline) {
+    updateTodo.deadline = req.body.deadline;
+  }
+  console.log(`patching data - ${req.params.id}:`, updateTodo);
+  Todo.updateOne(
+    { _id: req.params.id },
+    {
+      $set: updateTodo,
+    },
+    function (err, todo) {
+      res.setHeader("Content-Type", "application/json");
+      if (err) {
+        res.status(500).send({
+          message: `patch request failed to replace todo: ${err}`,
+          error: err,
+        });
+        return;
+      }
+      // updated!
+      res.status(200).json(todo);
+    }
+  );
 });
 
 module.exports = server;

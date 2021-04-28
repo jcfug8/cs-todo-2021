@@ -8,64 +8,82 @@ server.use(express.json({}));
 
 server.use(express.static(`${__dirname}/public/`));
 
+// this handler is what is used to get a single todo from the database
 server.get("/todo/:id", (req, res) => {
-  console.log(req.body);
-  Todo.findById(req.body.id, function (err, todo) {
+  console.log(`request to get a single todo with id ${req.params}`);
+  Todo.findById(req.params.id, function (err, todo) {
     res.setHeader("Content-Type", "application/json");
     if (err) {
       res.status(500).send({
-        message: `post request failed to replace todo: ${err}`,
+        message: `post request failed to get todo`,
+        id: req.params.id,
         error: err,
       });
       return;
     }
-    // saved!
-    res.status(201).json(todo);
+    res.status(200).json(todo);
   });
 });
 
+// this handler is what is used to get all todos
 server.get("/todo", (req, res) => {
-  console.log(req.body);
+  console.log(`request to get a all todos`);
   Todo.find({}, function (err, todos) {
     res.setHeader("Content-Type", "application/json");
     if (err) {
       res.status(500).send({
-        message: `get request failed to list all todos: ${err}`,
+        message: `get request failed to list all todos`,
         error: err,
       });
       return;
     }
-    // saved!
     res.status(200).json(todos);
   });
 });
 
+// this handler is what is used to insert a todo
 server.post("/todo", (req, res) => {
-  console.log(req.body);
+  console.log(`request to insert a todo: `, req.body);
+  let deadline;
+  if (req.body.deadline) {
+    try {
+      deadline = new Date(req.body.deadline);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({
+        message: `unable to parse deadline`,
+        error: err,
+      });
+      return;
+    }
+  }
   Todo.create(
     {
       name: req.body.name || "",
       description: req.body.description || "",
-      done: false,
-      deadline: new Date(),
+      done: req.body.done || false,
+      deadline: deadline || new Date(),
     },
     function (err, todo) {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
-          message: `post request failed to create todo: ${err}`,
+          message: `post request failed to create todo`,
           error: err,
         });
         return;
       }
-      // saved!
       res.status(201).json(todo);
     }
   );
 });
 
+// this handler is what is used to completely replace a todo
 server.put("/todo/:id", (req, res) => {
-  console.log(`replacing - ${req.body.id}:`, req.body);
+  console.log(
+    `request to replace a to with the id of ${req.params.id}: `,
+    req.body
+  );
   Todo.updateOne(
     { _id: req.params.id },
     {
@@ -80,19 +98,20 @@ server.put("/todo/:id", (req, res) => {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
-          message: `post request failed to replace todo: ${err}`,
+          message: `post request failed to replace todo`,
+          id: req.params.id,
           error: err,
         });
         return;
       }
-      // updated!
       res.status(200).json(todo);
     }
   );
 });
 
+// this handler is what is used to update a todo
 server.patch("/todo/:id", (req, res) => {
-  console.log(`patching body - ${req.params.id}:`, req.body);
+  console.log(`request to patch a todo with id ${req.params.id}: `, req.body);
   updateTodo = {};
   if (req.body.name) {
     updateTodo.name = req.body.name;
@@ -116,15 +135,32 @@ server.patch("/todo/:id", (req, res) => {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
-          message: `patch request failed to replace todo: ${err}`,
+          message: `patch request failed to replace todo`,
+          id: req.params.id,
           error: err,
         });
         return;
       }
-      // updated!
       res.status(200).json(todo);
     }
   );
+});
+
+// this handler is what is used to delete a single todo from the database
+server.delete("/todo/:id", (req, res) => {
+  console.log(`request to delete a single todo with id ${req.params}`);
+  Todo.findByIdAndDelete(req.params.id, function (err, todo) {
+    res.setHeader("Content-Type", "application/json");
+    if (err) {
+      res.status(500).send({
+        message: `post request failed to delete todo`,
+        id: req.params.id,
+        error: err,
+      });
+      return;
+    }
+    res.status(200).json(todo);
+  });
 });
 
 module.exports = server;

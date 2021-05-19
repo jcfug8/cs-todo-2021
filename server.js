@@ -1,10 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const { update } = require("./model");
 const server = express();
 
 const Todo = require("./model");
 
 server.use(express.json({}));
+server.use(cors);
 
 server.use(express.static(`${__dirname}/public/`));
 

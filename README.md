@@ -26,9 +26,13 @@ List all of the todos in the database
 
 - N/A
 
-## Success Code
+### Success Code
 
 - 200
+
+### Error Codes
+
+- 500 == Any Error
 
 ### Example Successful Return
 
@@ -71,9 +75,14 @@ Get a specific
 
 - N/A
 
-## Success Code
+### Success Code
 
 - 200
+
+### Error Codes
+
+- 404 == Not Found
+- 500 == Any Other Error
 
 ### Example Successful Return
 
@@ -117,9 +126,13 @@ Create a new todo. Any argument that is left out will default.
 }
 ```
 
-## Success Code
+### Success Code
 
 - 201
+
+### Error Codes
+
+- 500 == Any Error
 
 ### Example Successful Return
 
@@ -159,9 +172,14 @@ Completely replace an existing todo. Any argument that is left out will not get 
 }
 ```
 
-## Success Code
+### Success Code
 
 - 200
+
+### Error Codes
+
+- 404 == Not Found
+- 500 == Any Other Error
 
 ### Example Successful Return
 
@@ -202,9 +220,14 @@ Updates an existing todo. Any argument that is left out will default.
 }
 ```
 
-## Success Code
+### Success Code
 
 - 200
+
+### Error Codes
+
+- 404 == Not Found
+- 500 == Any Other Error
 
 ### Example Successful Return
 
@@ -234,9 +257,14 @@ Removes an existing todo.
 
 - N/A
 
-## Success Code
+### Success Code
 
 - 200
+
+### Error Codes
+
+- 404 == Not Found
+- 500 == Any Other Error
 
 ### Example Successful Return
 

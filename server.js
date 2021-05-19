@@ -219,6 +219,12 @@ server.delete("/todo/:id", (req, res) => {
         error: err,
       });
       return;
+    } else if (todo === null) {
+      res.status(404).send({
+        message: `todo not found`,
+        id: req.params.id,
+      });
+      return;
     }
     res.status(200).json(todo);
   });

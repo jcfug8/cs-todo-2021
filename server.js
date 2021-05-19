@@ -147,12 +147,11 @@ server.put("/todo/:id", (req, res) => {
         });
         return;
       } else if (res.nModified == 0) {
-        if (err) {
-          res.status(404).send({
-            message: `todo not found`,
-            id: req.params.id,
-          });
-          return;
+        res.status(404).send({
+          message: `todo not found`,
+          id: req.params.id,
+        });
+        return;
       }
       res.status(200).json(res);
     }

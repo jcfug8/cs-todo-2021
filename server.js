@@ -137,7 +137,7 @@ server.put("/todo/:id", (req, res) => {
         deadline: new Date(),
       },
     },
-    function (err, todo) {
+    function (err, res) {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
@@ -146,8 +146,15 @@ server.put("/todo/:id", (req, res) => {
           error: err,
         });
         return;
+      } else if (res.nModified == 0) {
+        if (err) {
+          res.status(404).send({
+            message: `todo not found`,
+            id: req.params.id,
+          });
+          return;
       }
-      res.status(200).json(todo);
+      res.status(200).json(res);
     }
   );
 });
@@ -191,7 +198,7 @@ server.patch("/todo/:id", (req, res) => {
 
 // this handler is what is used to delete a single todo from the database
 server.delete("/todo/:id", (req, res) => {
-  console.log(`request to delete a single todo with id ${req.params}`);
+  console.log(`request to delete a single todo with id ${req.params.id}`);
   Todo.findByIdAndDelete(req.params.id, function (err, todo) {
     res.setHeader("Content-Type", "application/json");
     if (err) {

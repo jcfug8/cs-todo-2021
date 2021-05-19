@@ -146,7 +146,7 @@ server.put("/todo/:id", (req, res) => {
           error: err,
         });
         return;
-      } else if (updateOneRes.nModified == 0) {
+      } else if (updateOneRes.n === 0) {
         res.status(404).send({
           message: `todo not found`,
           id: req.params.id,

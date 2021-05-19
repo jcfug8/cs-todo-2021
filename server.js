@@ -137,7 +137,7 @@ server.put("/todo/:id", (req, res) => {
         deadline: new Date(),
       },
     },
-    function (err, res) {
+    function (err, updateOneRes) {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
@@ -153,7 +153,7 @@ server.put("/todo/:id", (req, res) => {
         });
         return;
       }
-      res.status(200).json(res);
+      res.status(200).json(updateOneRes);
     }
   );
 });

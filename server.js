@@ -6,6 +6,9 @@ const server = express();
 
 const Todo = require("./model");
 
+server.use(cors());
+server.options("*", cors());
+
 const getActualRequestDurationInMilliseconds = (start) => {
   const NS_PER_SEC = 1e9; //  convert to nanoseconds
   const NS_TO_MS = 1e6; // convert to milliseconds
@@ -43,10 +46,8 @@ let demoLogger = (req, res, next) => {
   next();
 };
 
-server.use(demoLogger);
-
-server.use(cors);
 server.use(express.json({}));
+server.use(demoLogger);
 
 server.use(express.static(`${__dirname}/public/`));
 

@@ -138,8 +138,8 @@ server.put("/todo/:id", (req, res) => {
       $set: {
         name: req.body.name || "",
         description: req.body.description || "",
-        done: false,
-        deadline: new Date(),
+        done: req.body.done,
+        deadline: req.body.deadline,
       },
     },
     function (err, updateOneRes) {

@@ -7,7 +7,6 @@ const server = express();
 const Todo = require("./model");
 
 server.use(cors());
-server.options("*", cors());
 
 const getActualRequestDurationInMilliseconds = (start) => {
   const NS_PER_SEC = 1e9; //  convert to nanoseconds

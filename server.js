@@ -185,7 +185,7 @@ server.patch("/todo/:id", (req, res) => {
     {
       $set: updateTodo,
     },
-    function (err, todo) {
+    function (err, updateOneRes) {
       res.setHeader("Content-Type", "application/json");
       if (err) {
         res.status(500).send({
@@ -194,14 +194,14 @@ server.patch("/todo/:id", (req, res) => {
           error: err,
         });
         return;
-      } else if (todo.n === 0) {
+      } else if (updateOneRes.n === 0) {
         res.status(404).send({
           message: `todo not found`,
           id: req.params.id,
         });
         return;
       }
-      res.status(200).json(todo);
+      res.status(200).json(updateOneRes);
     }
   );
 });

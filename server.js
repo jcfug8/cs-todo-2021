@@ -173,7 +173,7 @@ server.patch("/todo/:id", (req, res) => {
   if (req.body.description) {
     updateTodo.description = req.body.description;
   }
-  if (req.body.done) {
+  if (req.body.done || req.body.done === false) {
     updateTodo.done = req.body.done;
   }
   if (req.body.deadline) {
